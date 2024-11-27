@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, FormEvent, Suspense } from "react";
+import dynamic from 'next/dynamic';
 import { io, Socket } from "socket.io-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormSearch } from "@/components/formSearch/formSearch";
@@ -30,7 +31,7 @@ interface AlgorithmResults {
   computation_time: number;
 }
 
-const Search = () => {
+const Search = dynamic(() => Promise.resolve(() =>  {
   const searchParams = useSearchParams();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [query, setQuery] = useState<string>(searchParams.get("q") || "");
@@ -45,7 +46,7 @@ const Search = () => {
   const [skip, setSkip] = useState(page ? (page - 1) * 11 : 0);
   const router = useRouter();
   const firstRenderRef = useRef(true);
-  
+
   useEffect(() => {
     const newSessionId = Math.random().toString(36).substring(2, 15);
     setSessionId(newSessionId);
@@ -93,13 +94,20 @@ const Search = () => {
   // }, [isBrowser, query, isSocketReady]);
 
   useEffect(() => {
+    // Pastikan kode ini HANYA berjalan di browser
     if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {
-      const formElement = document.querySelector("form");
-      if (formElement) {
-        const event = new Event("submit", { bubbles: true, cancelable: true });
-        formElement.dispatchEvent(event);
-      }
-      firstRenderRef.current = false;
+      // Delay untuk memastikan DOM sudah siap
+      const timer = setTimeout(() => {
+        const formElement = document.querySelector("form");
+        if (formElement) {
+          const event = new Event("submit", { bubbles: true, cancelable: true });
+          formElement.dispatchEvent(event);
+        }
+        firstRenderRef.current = false;
+      }, 100);
+
+      // Bersihkan timer untuk mencegah memory leak
+      return () => clearTimeout(timer);
     }
   }, [query, isSocketReady]);
 
@@ -249,7 +257,7 @@ const Search = () => {
       </div>
     </div>
   );
-};
+}), { ssr: false });
 
 
 const ResultPage = () => {
