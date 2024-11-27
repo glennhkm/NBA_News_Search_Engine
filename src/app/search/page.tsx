@@ -79,16 +79,17 @@ const Search = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {    
-        const formElement = window.document.querySelector("form");
-        if (formElement) {
-          const event = new Event("submit", { bubbles: true, cancelable: true });
-          formElement.dispatchEvent(event);
-        }
-        firstRenderRef.current = false;
-    }    
-  }, [query, isSocketReady]);
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {    
+  //     const formElement = window.document.querySelector("form");
+  //     console.log(formElement);
+  //     if (formElement) {
+  //       const event = new Event("submit", { bubbles: true, cancelable: true });
+  //       formElement.dispatchEvent(event);
+  //     }
+  //     firstRenderRef.current = false;
+  //   }    
+  // }, [query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

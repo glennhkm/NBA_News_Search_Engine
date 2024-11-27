@@ -12,7 +12,7 @@ interface InputSearchProps {
 export const FormSearch = (props: InputSearchProps) => {
   return (
     <form
-      className={`flex gap-2 z-20 rounded-full px-4 border-[1px] border-white/20 ${props.formClassName}`}
+      className={`flex form gap-2 z-20 rounded-full px-4 border-[1px] border-white/20 ${props.formClassName}`}
       onSubmit={props.searchHandler}
     >
       <input
