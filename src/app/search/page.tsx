@@ -73,8 +73,7 @@ const Search = () => {
         setJaccardResults({
           results: data.results,
           computation_time: data.computation_time      
-        });
-        setLoading(false);
+        });        
         setTotalPages(data.results.length);
       }
     });
@@ -85,7 +84,7 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    if (firstRenderRef.current && query && isSocketReady) {      
+    if (typeof window !== "undefined" && firstRenderRef.current && query && isSocketReady) {      
       const formElement = document.querySelector("form");
       if (formElement) {
         const event = new Event("submit", { bubbles: true, cancelable: true });
@@ -93,7 +92,6 @@ const Search = () => {
       }
       firstRenderRef.current = false;
     }
-    
   }, [query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
@@ -112,13 +110,13 @@ const Search = () => {
       setSkip(0);
     }
 
-    setTimeout(() => {
-      socket?.emit("search_request", {
-        query,
-        top_k: 50,
-        sid: sessionId,
-      });
-    }, 1000);    
+    socket?.emit("search_request", {
+      query,
+      top_k: 50,
+      sid: sessionId,
+    });
+
+    setLoading(false);
   };
 
   const handlePagination = (index: number) => {
