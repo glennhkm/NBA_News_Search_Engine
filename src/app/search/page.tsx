@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Loading } from "@/components/loading/loading";
 import { NoResultFound } from "@/components/noResultFound/noResultFound";
 import { TextMarquee } from "@/components/marquee/textMarquee";
+import { useIsBrowser } from "@/hooks/useIsBrowser";
 
 interface Article {
   _id: string;
@@ -36,8 +37,8 @@ const Search = () => {
   const [page, setPage] = useState<number>(Number(searchParams.get("page")) || 1);
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [windowDocument, setWindowDocument] = useState<Document | undefined>(undefined);
+  const [loading, setLoading] = useState(false);  
+  const isBrowser = useIsBrowser()
   const [sessionId, setSessionId] = useState("");
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -49,10 +50,6 @@ const Search = () => {
   console.log(skip);
 
   useEffect(() => {
-    setTimeout(() => {
-        setWindowDocument(window.document);
-    }, 600);
-
     const newSessionId = Math.random().toString(36).substring(2, 15);
     setSessionId(newSessionId);
 
@@ -88,15 +85,15 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    if (firstRenderRef.current && query && isSocketReady) {      
-      const formElement = windowDocument?.querySelector("form");
+    if (isBrowser && firstRenderRef.current && query && isSocketReady) {
+      const formElement = document.querySelector("form");
       if (formElement) {
         const event = new Event("submit", { bubbles: true, cancelable: true });
         formElement.dispatchEvent(event);
       }
       firstRenderRef.current = false;
     }
-  }, [query, isSocketReady]);
+  }, [isBrowser, query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -212,12 +209,6 @@ const Search = () => {
       </div>
       <div className={`grid md:grid-cols-2 gap-8 mt-[18.2rem] pb-8 px-8 relative ${(!loading && totalPages !== 0) && 'border-b-[1.5px] border-b-white/30'}`}>
         <div className={`${loading || jaccardResults?.results.length === 0 ? 'fixed h-screen top-0' : 'absolute -top-[16.4rem] bottom-0'} left-1/2 -translate-x-1/2 w-[1.5px] bg-white/30`}></div>
-        {loading && (
-          <>
-            <Loading/>
-            <Loading/>
-          </>
-        )}
         {!loading && (
           <>
             {(cosineResults) && cosineResults.results.length > 0  ? renderResults({ 
@@ -233,7 +224,13 @@ const Search = () => {
                 : <NoResultFound/>
             }
           </>
-        )}        
+        )}
+        {loading && (
+          <>
+            <Loading/>
+            <Loading/>
+          </>
+        )}
       </div>
       <div className="w-full flex gap-2 my-6 justify-center">
         {Array.from({ length: Math.ceil(totalPages/11) }).map((_, index) => (
