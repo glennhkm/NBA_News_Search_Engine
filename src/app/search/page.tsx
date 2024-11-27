@@ -84,14 +84,16 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && firstRenderRef.current && query && isSocketReady) {      
-      const formElement = document.querySelector("form");
-      if (formElement) {
-        const event = new Event("submit", { bubbles: true, cancelable: true });
-        formElement.dispatchEvent(event);
+    setTimeout(() => {      
+      if (typeof window !== "undefined" && firstRenderRef.current && query && isSocketReady) {      
+        const formElement = document.querySelector("form");
+        if (formElement) {
+          const event = new Event("submit", { bubbles: true, cancelable: true });
+          formElement.dispatchEvent(event);
+        }
+        firstRenderRef.current = false;
       }
-      firstRenderRef.current = false;
-    }
+    }, 500);
   }, [query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
@@ -208,6 +210,12 @@ const Search = () => {
       </div>
       <div className={`grid md:grid-cols-2 gap-8 mt-[18.2rem] pb-8 px-8 relative ${(!loading && totalPages !== 0) && 'border-b-[1.5px] border-b-white/30'}`}>
         <div className={`${loading || jaccardResults?.results.length === 0 ? 'fixed h-screen top-0' : 'absolute -top-[16.4rem] bottom-0'} left-1/2 -translate-x-1/2 w-[1.5px] bg-white/30`}></div>
+        {loading && (
+          <>
+            <Loading/>
+            <Loading/>
+          </>
+        )}
         {!loading && (
           <>
             {(cosineResults) && cosineResults.results.length > 0  ? renderResults({ 
@@ -223,13 +231,7 @@ const Search = () => {
                 : <NoResultFound/>
             }
           </>
-        )}
-        {loading && (
-          <>
-            <Loading/>
-            <Loading/>
-          </>
-        )}
+        )}        
       </div>
       <div className="w-full flex gap-2 my-6 justify-center">
         {Array.from({ length: Math.ceil(totalPages/11) }).map((_, index) => (
