@@ -8,7 +8,6 @@ import Image from "next/image";
 import { Loading } from "@/components/loading/loading";
 import { NoResultFound } from "@/components/noResultFound/noResultFound";
 import { TextMarquee } from "@/components/marquee/textMarquee";
-// import { useIsBrowser } from "@/hooks/useIsBrowser";
 
 interface Article {
   _id: string;
@@ -38,7 +37,6 @@ const Search = () => {
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
   const [loading, setLoading] = useState(false);  
-  // const isBrowser = useIsBrowser()
   const [sessionId, setSessionId] = useState("");
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -81,33 +79,15 @@ const Search = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (isBrowser && firstRenderRef.current && query && isSocketReady) {
-  //     const formElement = document.querySelector("form");
-  //     if (formElement) {
-  //       const event = new Event("submit", { bubbles: true, cancelable: true });
-  //       formElement.dispatchEvent(event);
-  //     }
-  //     firstRenderRef.current = false;
-  //   }
-  // }, [isBrowser, query, isSocketReady]);
-
   useEffect(() => {
-    // Pastikan kode ini HANYA berjalan di browser
-    if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {
-      // Delay untuk memastikan DOM sudah siap
-      const timer = setTimeout(() => {
-        const formElement = document.querySelector("form");
+    if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {    
+        const formElement = window.document.querySelector("form");
         if (formElement) {
           const event = new Event("submit", { bubbles: true, cancelable: true });
           formElement.dispatchEvent(event);
         }
         firstRenderRef.current = false;
-      }, 1000);
-
-      // Bersihkan timer untuk mencegah memory leak
-      return () => clearTimeout(timer);
-    }
+    }    
   }, [query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {

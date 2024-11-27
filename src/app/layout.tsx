@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: "NBA News Search Engine Team 7",
   icons: {
     icon: ["/favicon.ico?v=4"],
-    apple: ["/apple-touch-icon.png?v=4"],
-    shortcut: ["apple-touch-icon.png"],
+    apple: ["/favicon/apple-touch-icon.png?v=4"],
+    shortcut: ["/favicon/apple-touch-icon.png"],
   },
 };
 
@@ -37,9 +37,11 @@ export default function RootLayout({
           <Image
             src="/images/iconic.jpg"
             fill
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL={'/images/iconic.jpg'}
             alt="main-bg"
             className="w-full h-full object-cover"
-            priority
           />
         </div>
         <div className="fixed right-8 flex flex-col text-sm text-white/40 top-14 z-[100]">
