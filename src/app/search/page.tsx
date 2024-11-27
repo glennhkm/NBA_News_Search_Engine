@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef, FormEvent, Suspense } from "react";
-import dynamic from 'next/dynamic';
 import { io, Socket } from "socket.io-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormSearch } from "@/components/formSearch/formSearch";
@@ -9,6 +8,7 @@ import Image from "next/image";
 import { Loading } from "@/components/loading/loading";
 import { NoResultFound } from "@/components/noResultFound/noResultFound";
 import { TextMarquee } from "@/components/marquee/textMarquee";
+// import { useIsBrowser } from "@/hooks/useIsBrowser";
 
 interface Article {
   _id: string;
@@ -30,7 +30,7 @@ interface AlgorithmResults {
   computation_time: number;
 }
 
-const Search = dynamic(() => Promise.resolve(() =>  {
+const Search = () => {
   const searchParams = useSearchParams();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [query, setQuery] = useState<string>(searchParams.get("q") || "");
@@ -38,6 +38,7 @@ const Search = dynamic(() => Promise.resolve(() =>  {
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
   const [loading, setLoading] = useState(false);  
+  // const isBrowser = useIsBrowser()
   const [sessionId, setSessionId] = useState("");
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -102,7 +103,7 @@ const Search = dynamic(() => Promise.resolve(() =>  {
           formElement.dispatchEvent(event);
         }
         firstRenderRef.current = false;
-      }, 100);
+      }, 1000);
 
       // Bersihkan timer untuk mencegah memory leak
       return () => clearTimeout(timer);
@@ -255,7 +256,7 @@ const Search = dynamic(() => Promise.resolve(() =>  {
       </div>
     </div>
   );
-}), { ssr: false });
+};
 
 
 const ResultPage = () => {
