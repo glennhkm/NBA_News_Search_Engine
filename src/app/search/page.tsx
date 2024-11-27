@@ -9,7 +9,6 @@ import Image from "next/image";
 import { Loading } from "@/components/loading/loading";
 import { NoResultFound } from "@/components/noResultFound/noResultFound";
 import { TextMarquee } from "@/components/marquee/textMarquee";
-import { useIsBrowser } from "@/hooks/useIsBrowser";
 
 interface Article {
   _id: string;
@@ -39,7 +38,6 @@ const Search = dynamic(() => Promise.resolve(() =>  {
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
   const [loading, setLoading] = useState(false);  
-  const isBrowser = useIsBrowser()
   const [sessionId, setSessionId] = useState("");
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
