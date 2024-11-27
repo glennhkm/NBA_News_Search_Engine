@@ -45,10 +45,7 @@ const Search = () => {
   const [skip, setSkip] = useState(page ? (page - 1) * 11 : 0);
   const router = useRouter();
   const firstRenderRef = useRef(true);
-
-  console.log(totalPages);
-  console.log(skip);
-
+  
   useEffect(() => {
     const newSessionId = Math.random().toString(36).substring(2, 15);
     setSessionId(newSessionId);
@@ -84,8 +81,19 @@ const Search = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (isBrowser && firstRenderRef.current && query && isSocketReady) {
+  //     const formElement = document.querySelector("form");
+  //     if (formElement) {
+  //       const event = new Event("submit", { bubbles: true, cancelable: true });
+  //       formElement.dispatchEvent(event);
+  //     }
+  //     firstRenderRef.current = false;
+  //   }
+  // }, [isBrowser, query, isSocketReady]);
+
   useEffect(() => {
-    if (isBrowser && firstRenderRef.current && query && isSocketReady) {
+    if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {
       const formElement = document.querySelector("form");
       if (formElement) {
         const event = new Event("submit", { bubbles: true, cancelable: true });
@@ -93,7 +101,7 @@ const Search = () => {
       }
       firstRenderRef.current = false;
     }
-  }, [isBrowser, query, isSocketReady]);
+  }, [query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
