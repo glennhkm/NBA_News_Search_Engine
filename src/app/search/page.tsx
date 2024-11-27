@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Loading } from "@/components/loading/loading";
 import { NoResultFound } from "@/components/noResultFound/noResultFound";
 import { TextMarquee } from "@/components/marquee/textMarquee";
+import dynamic from 'next/dynamic'
 
 interface Article {
   _id: string;
@@ -32,8 +33,19 @@ interface AlgorithmResults {
 const Search = () => {
   const searchParams = useSearchParams();
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [query, setQuery] = useState<string>(searchParams.get("q") || "");
-  const [page, setPage] = useState<number>(Number(searchParams.get("page")) || 1);
+  const [query, setQuery] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return searchParams.get("q") || "";
+    }
+    return "";
+  });
+  
+  const [page, setPage] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      return Number(searchParams.get("page")) || 1;
+    }
+    return 1;
+  });
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
   const [loading, setLoading] = useState(false);  
@@ -45,40 +57,58 @@ const Search = () => {
   const firstRenderRef = useRef(true);
 
   useEffect(() => {
-    const newSessionId = Math.random().toString(36).substring(2, 15);
-    setSessionId(newSessionId);
-
-    const newSocket = io("http://localhost:5000");
-    setSocket(newSocket);
-
-    newSocket.on("connect", () => {
-      setIsSocketReady(true);
-    });
-
-    newSocket.on("cosine_results", (data) => {
-      if (data.sid === newSessionId) {
-        setCosineResults({
-          results: data.results,
-          computation_time: data.computation_time      
-        });
-      }
-    });
-
-    newSocket.on("jaccard_results", (data) => {
-      if (data.sid === newSessionId) {
-        setJaccardResults({
-          results: data.results,
-          computation_time: data.computation_time      
-        });        
-        setTotalPages(data.results.length);
-      }
-    });
-    
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
   
+    if (typeof window !== 'undefined') {
+      const newSessionId = Math.random().toString(36).substring(2, 15);
+      setSessionId(newSessionId);
+  
+      const newSocket = io("http://localhost:5000", {
+      
+        transports: ['websocket']
+      });
+      setSocket(newSocket);
+  
+      newSocket.on("connect", () => {
+        setIsSocketReady(true);
+      });
+  
+      newSocket.on("cosine_results", (data) => {
+        if (data.sid === newSessionId) {
+          setCosineResults({
+            results: data.results,
+            computation_time: data.computation_time      
+          });
+        }
+      });
+  
+      newSocket.on("jaccard_results", (data) => {
+        if (data.sid === newSessionId) {
+          setJaccardResults({
+            results: data.results,
+            computation_time: data.computation_time      
+          });        
+          setTotalPages(data.results.length);
+        }
+      });
+      
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {    
+      const formElement = window.document.querySelector("form");
+      console.log(formElement);
+      if (formElement) {
+        const event = new Event("submit", { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(event);
+      }
+      firstRenderRef.current = false;
+    }    
+  }, [query, isSocketReady]);
+
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!query.trim()) {
@@ -228,12 +258,12 @@ const Search = () => {
 };
 
 
-const ResultPage = () => {
+const ResultPage = dynamic(() => Promise.resolve(() => {
   return (
     <Suspense>
       <Search/>
     </Suspense>
-  );  
-}
+  );
+}), { ssr: false })
 
 export default ResultPage;
