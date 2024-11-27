@@ -37,7 +37,7 @@ const Search = () => {
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [windowDocument, setWindowDocument] = useState<Document | undefined>(undefined);
   const [sessionId, setSessionId] = useState("");
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -49,6 +49,10 @@ const Search = () => {
   console.log(skip);
 
   useEffect(() => {
+    setTimeout(() => {
+        setWindowDocument(window.document);
+    }, 600);
+
     const newSessionId = Math.random().toString(36).substring(2, 15);
     setSessionId(newSessionId);
 
@@ -84,16 +88,14 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {      
-      if (typeof window !== "undefined" && firstRenderRef.current && query && isSocketReady) {      
-        const formElement = document.querySelector("form");
-        if (formElement) {
-          const event = new Event("submit", { bubbles: true, cancelable: true });
-          formElement.dispatchEvent(event);
-        }
-        firstRenderRef.current = false;
+    if (firstRenderRef.current && query && isSocketReady) {      
+      const formElement = windowDocument?.querySelector("form");
+      if (formElement) {
+        const event = new Event("submit", { bubbles: true, cancelable: true });
+        formElement.dispatchEvent(event);
       }
-    }, 500);
+      firstRenderRef.current = false;
+    }
   }, [query, isSocketReady]);
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
