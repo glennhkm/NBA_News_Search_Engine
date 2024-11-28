@@ -48,10 +48,8 @@ const Search = () => {
       const newSessionId = Math.random().toString(36).substring(2, 15);
       setSessionId(newSessionId);
   
-      const newSocket = io("http://localhost:5000", {
-        transports: ['websocket']
-      });
-      
+      const newSocket = io("http://localhost:5000");
+
       setSocket(newSocket);
   
       newSocket.on("connect", () => {
