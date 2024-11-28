@@ -1,3 +1,5 @@
+"use client"
+
 import loadingBasket from "@/lottieJson/loadingBasket.json";
 import Lottie from "lottie-react";
 
