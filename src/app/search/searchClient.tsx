@@ -32,19 +32,8 @@ interface AlgorithmResults {
 const Search = () => {
   const searchParams = useSearchParams();
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [query, setQuery] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return searchParams.get("q") || "";
-    }
-    return "";
-  });
-  
-  const [page, setPage] = useState<number>(() => {
-    if (typeof window !== 'undefined') {
-      return Number(searchParams.get("page")) || 1;
-    }
-    return 1;
-  });
+  const [query, setQuery] = useState<string>(() => searchParams.get("q") || "");  
+  const [page, setPage] = useState<number>(Number(searchParams.get("page")) || 1);
   const [cosineResults, setCosineResults] = useState<AlgorithmResults | null>(null);
   const [jaccardResults, setJaccardResults] = useState<AlgorithmResults | null>(null);
   const [loading, setLoading] = useState(false);  
@@ -56,15 +45,13 @@ const Search = () => {
   const firstRenderRef = useRef(true);
 
   useEffect(() => {
-  
-    if (typeof window !== 'undefined') {
       const newSessionId = Math.random().toString(36).substring(2, 15);
       setSessionId(newSessionId);
   
       const newSocket = io("http://localhost:5000", {
-      
         transports: ['websocket']
       });
+      
       setSocket(newSocket);
   
       newSocket.on("connect", () => {
@@ -93,12 +80,11 @@ const Search = () => {
       return () => {
         newSocket.disconnect();
       };
-    }
   }, []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && firstRenderRef.current && query && isSocketReady) {    
-      const formElement = window.document.querySelector("form");
+    if (firstRenderRef.current && query && isSocketReady) {    
+      const formElement = document.querySelector("form");
       console.log(formElement);
       if (formElement) {
         const event = new Event("submit", { bubbles: true, cancelable: true });
