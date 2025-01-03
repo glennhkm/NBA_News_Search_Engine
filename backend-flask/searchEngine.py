@@ -15,9 +15,9 @@ nltk.download('stopwords')
 
 class NBANewsSearchEngine:
     def __init__(self, 
-                 mongo_uri="mongodb+srv://glennhkm:26July04@hmif-web-db-dev.us3f3k8.mongodb.net/?retryWrites=true&w=majority&appName=hmif-web-db-dev", 
-                 database_name='projek-akhir-mk-pi', 
-                 collection_name='news'):
+                 mongo_uri=os.getenv('MONGDB_ATLAS_URI'), 
+                 database_name=os.getenv('MONGO_DB_NAME'), 
+                 collection_name=os.getenv('MONGO_NEWS_COLLECTION_NAME')):
         self.client = MongoClient(mongo_uri)
         self.db = self.client[database_name]
         self.collection = self.db[collection_name]
@@ -26,7 +26,7 @@ class NBANewsSearchEngine:
     
     def preprocess_text(self, text):
         if not isinstance(text, str):
-            text = str(text)
+            text = str(text)    
         
         text = text.lower()
         text = re.sub(r'[^a-zA-Z\s]', '', text)

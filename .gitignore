@@ -1,5 +1,6 @@
 # backend
-/backend-flask/venv
+/backend-flask/__pycache__
+/backend-flask/projekAkhir-MK-PI-venv
 /backend-flask/.env
 
 # frontend
@@ -12,30 +13,23 @@
 /frontend-nextjs/!.yarn/releases
 /frontend-nextjs/!.yarn/versions
 
-/frontend-nextjs/# testing
 /frontend-nextjs/coverage
 
-/frontend-nextjs/# next.js
 /frontend-nextjs/.next/
 /frontend-nextjs/out/
 
-/frontend-nextjs/# production
+/frontend-nextjs/
 /frontend-nextjs/build
 
-/frontend-nextjs/# misc
 /frontend-nextjs/.DS_Store
 /frontend-nextjs/*.pem
-/frontend-nextjs/# debug
 /frontend-nextjs/npm-debug.log*
 /frontend-nextjs/yarn-debug.log*
 /frontend-nextjs/yarn-error.log*
 
-/frontend-nextjs/# env files (can opt-in for committing if needed)
 /frontend-nextjs/.env*
 
-/frontend-nextjs/# vercel
 /frontend-nextjs/.vercel
 
-/frontend-nextjs/# typescript
 /frontend-nextjs/*.tsbuildinfo
 /frontend-nextjs/next-env.d.ts

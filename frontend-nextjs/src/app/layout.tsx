@@ -26,7 +26,7 @@ export default function RootLayout({
       >
         <Link href="/" className="w-20 h-32 fixed top-12 left-6 z-[45]">
           <Image
-            src="/images/nba-logo.png"
+            src="/images/nba-logo.webp"
             fill
             alt="logo"
             sizes="30%"
@@ -39,7 +39,7 @@ export default function RootLayout({
             fill
             sizes="100vw"
             placeholder="blur"
-            blurDataURL={'/images/iconic.jpg'}
+            blurDataURL={'/images/bg-hero.webp'}
             alt="main-bg"
             className="w-full h-full object-cover"
           />
