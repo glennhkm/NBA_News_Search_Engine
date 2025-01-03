@@ -35,12 +35,11 @@ export default function RootLayout({
         </Link>
         <div className="h-screen w-screen -z-10 fixed top-0 left-0">
           <Image
-            src="/images/iconic.jpg"
+            src="/images/bg-hero.webp"
             fill
             sizes="100vw"
-            placeholder="blur"
-            blurDataURL={'/images/bg-hero.webp'}
             alt="main-bg"
+            priority
             className="w-full h-full object-cover"
           />
         </div>

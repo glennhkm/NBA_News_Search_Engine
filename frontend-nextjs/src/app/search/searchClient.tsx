@@ -48,7 +48,7 @@ const Search = () => {
       const newSessionId = Math.random().toString(36).substring(2, 15);
       setSessionId(newSessionId);
   
-      const newSocket = io("http://localhost:5000");
+      const newSocket = io(process.env.NEXT_PUBLIC_API_BASE_URL as string);
 
       setSocket(newSocket);
   
